@@ -1,0 +1,91 @@
+org: dorecorn
+app: transport-helper-server
+service: transport-helper-server
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+
+resources:
+  Resources:
+    UserTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-UserTable-${sls:stage}
+        AttributeDefinitions:
+          - AttributeName: telegram_id
+            AttributeType: S
+          - AttributeName: unit
+            AttributeType: S
+        KeySchema:
+          - AttributeName: telegram_id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - 
+            IndexName: UnitIndex
+            KeySchema:
+            - AttributeName: unit
+              KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 2
+              WriteCapacityUnits: 1
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    ActivityTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-ActivityTable-${sls:stage}
+        AttributeDefinitions:
+          - AttributeName: vehicle_no_by_month
+            AttributeType: S
+          - AttributeName: final_mileage
+            AttributeType: N
+          - AttributeName: telegram_id_by_month
+            AttributeType: S
+          
+        KeySchema:
+          - AttributeName: vehicle_no_by_month
+            KeyType: HASH
+          - AttributeName: final_mileage
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - 
+            IndexName: UserActivityIndex
+            KeySchema:
+            - AttributeName: telegram_id_by_month
+              KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 3
+              WriteCapacityUnits: 1
+        ProvisionedThroughput:
+          ReadCapacityUnits: 3
+          WriteCapacityUnits: 1
+
+    VehicleTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-VehicleTable-${sls:stage}
+        AttributeDefinitions:
+          - AttributeName: vehicle_no
+            AttributeType: N
+        KeySchema:
+          - AttributeName: vehicle_no
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - httpApi:
+          path: /
+          method: get
