@@ -1,32 +1,54 @@
 org: dorecorn
 app: transport-helper-server
 service: transport-helper-server
-frameworkVersion: '3'
+frameworkVersion: "3"
+
+plugins:
+  - serverless-offline
+
+custom:
+  DYNAMODB_USER_TABLE: ${self:service}-UserTable-${sls:stage}
+  DYNAMODB_ACTIVITY_TABLE: ${self:service}-ActivityTable-${sls:stage}
+  DYNAMODB_VEHICLE_TABLE: ${self:service}-VehicleTable-${sls:stage}
 
 provider:
   name: aws
   runtime: nodejs14.x
+  environment:
+    DYNAMODB_USER_TABLE: ${self:custom.DYNAMODB_USER_TABLE}
+    DYNAMODB_ACTIVITY_TABLE: ${self:custom.DYNAMODB_ACTIVITY_TABLE}
+    DYNAMODB_VEHICLE_TABLE: ${self:custom.DYNAMODB_VEHICLE_TABLE}
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "dynamodb:PutItem"
+            - "dynamodb:Get*"
+            - "dynamodb:Scan*"
+            - "dynamodb:UpdateItem"
+            - "dynamodb:DeleteItem"
+          Resource: "*"
 
 resources:
   Resources:
     UserTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:service}-UserTable-${sls:stage}
+        TableName: ${self:custom.DYNAMODB_USER_TABLE}
         AttributeDefinitions:
           - AttributeName: telegram_id
             AttributeType: S
-          - AttributeName: unit
+          - AttributeName: army_unit
             AttributeType: S
         KeySchema:
           - AttributeName: telegram_id
             KeyType: HASH
         GlobalSecondaryIndexes:
-          - 
-            IndexName: UnitIndex
+          - IndexName: ArmyUnitIndex
             KeySchema:
-            - AttributeName: unit
-              KeyType: HASH
+              - AttributeName: army_unit
+                KeyType: HASH
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:
@@ -39,26 +61,25 @@ resources:
     ActivityTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:service}-ActivityTable-${sls:stage}
+        TableName: ${self:custom.DYNAMODB_ACTIVITY_TABLE}
         AttributeDefinitions:
-          - AttributeName: vehicle_no_by_month
+          - AttributeName: vehicle_no_by_week
             AttributeType: S
           - AttributeName: final_mileage
             AttributeType: N
           - AttributeName: telegram_id_by_month
             AttributeType: S
-          
+
         KeySchema:
-          - AttributeName: vehicle_no_by_month
+          - AttributeName: vehicle_no_by_week
             KeyType: HASH
           - AttributeName: final_mileage
             KeyType: RANGE
         GlobalSecondaryIndexes:
-          - 
-            IndexName: UserActivityIndex
+          - IndexName: UserActivityIndex
             KeySchema:
-            - AttributeName: telegram_id_by_month
-              KeyType: HASH
+              - AttributeName: telegram_id_by_month
+                KeyType: HASH
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:
@@ -71,7 +92,7 @@ resources:
     VehicleTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:service}-VehicleTable-${sls:stage}
+        TableName: ${self:custom.DYNAMODB_VEHICLE_TABLE}
         AttributeDefinitions:
           - AttributeName: vehicle_no
             AttributeType: N
@@ -86,6 +107,54 @@ functions:
   hello:
     handler: handler.hello
     events:
-      - httpApi:
+      - http:
           path: /
           method: get
+
+  createNewUser:
+    handler: lambdas/createNewUser.createNewUser
+    events:
+      - http:
+          path: create_new_user
+          method: POST
+          cors: false
+
+  createNewVehicle:
+    handler: lambdas/createNewVehicle.createNewVehicle
+    events:
+      - http:
+          path: create_new_vehicle
+          method: POST
+          cors: false
+
+  getUser:
+    handler: lambdas/getUser.getUser
+    events:
+      - http:
+          path: get_user
+          method: GET
+          cors: false
+
+  getUsersInArmyUnit:
+    handler: lambdas/getUsersInArmyUnit.getUsersInArmyUnit
+    events:
+      - http:
+          path: get_users_in_army_unit
+          method: GET
+          cors: false
+
+  getUserActivityOfMonth:
+    handler: lambdas/getUserActivityOfMonth.getUserActivityOfMonth
+    events:
+      - http:
+          path: get_user_activity_of_month
+          method: GET
+          cors: false
+
+  createNewActivity:
+    handler: lambdas/createNewActivity.createNewActivity
+    events:
+      - http:
+          path: create_new_activity
+          method: POST
+          cors: false

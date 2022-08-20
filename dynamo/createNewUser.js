@@ -1,0 +1,15 @@
+module.exports = async (dynamoDb, data) => {
+  const putParams = {
+    TableName: process.env.DYNAMODB_USER_TABLE,
+    Item: {
+      telegram_id: data.telegram_id,
+      army_unit: data.army_unit,
+      name: data.name,
+      nric: data.nric,
+      total_mileage: data.total_mileage,
+      rank: data.rank,
+    },
+  };
+
+  return await dynamoDb.put(putParams).promise();
+};
