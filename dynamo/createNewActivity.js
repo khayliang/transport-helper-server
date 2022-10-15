@@ -54,7 +54,7 @@ module.exports = async (
   const vehicle = await getVehicle(dynamoDb, vehicle_no);
 
   if (final_mileage < initial_mileage) {
-    throw Error("Final mileage is less than initial mileage.")
+    throw Error("Final mileage is less than initial mileage.");
   }
   if (!vehicle) {
     await createNewVehicle(dynamoDb, {

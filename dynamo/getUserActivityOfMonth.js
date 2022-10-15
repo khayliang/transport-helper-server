@@ -8,14 +8,14 @@ module.exports = async (dynamodb, { telegram_id, month, year }) => {
       ":s": userActivityId,
     },
   };
-  const {Items} = await dynamodb.query(params).promise();
-  const parsedActivities = Items.map(activity => {
-    const {vehicle_no_by_week, ...rest } = activity
-    const vehicle_no = vehicle_no_by_week.split("#")[0]
+  const { Items } = await dynamodb.query(params).promise();
+  const parsedActivities = Items.map((activity) => {
+    const { vehicle_no_by_week, ...rest } = activity;
+    const vehicle_no = vehicle_no_by_week.split("#")[0];
     return {
       ...rest,
-      vehicle_no
-    }
-  })
+      vehicle_no,
+    };
+  });
   return parsedActivities;
 };
