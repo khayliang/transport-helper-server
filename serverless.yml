@@ -27,7 +27,8 @@ provider:
             - "dynamodb:Get*"
             - "dynamodb:Scan*"
             - "dynamodb:UpdateItem"
-            - "dynamodb:DeleteItem"
+            - "dynamodb:DeleteItem" 
+            - "dynamodb:Query"
           Resource: "*"
 
 resources:
