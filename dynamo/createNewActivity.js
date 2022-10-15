@@ -42,7 +42,7 @@ module.exports = async (
     vehicle_class,
   }
 ) => {
-  const dateOfActivity = new Date(timestamp * 1000);
+  const dateOfActivity = new Date(timestamp);
 
   const yearOfActivity = dateOfActivity.getWeekYear();
   const weekOfYear = dateOfActivity.getWeek();
@@ -53,6 +53,9 @@ module.exports = async (
 
   const vehicle = await getVehicle(dynamoDb, vehicle_no);
 
+  if (final_mileage < initial_mileage) {
+    throw Error("Final mileage is less than initial mileage.")
+  }
   if (!vehicle) {
     await createNewVehicle(dynamoDb, {
       vehicle_no,
