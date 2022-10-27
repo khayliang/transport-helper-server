@@ -39,7 +39,7 @@ resources:
         TableName: ${self:custom.DYNAMODB_USER_TABLE}
         AttributeDefinitions:
           - AttributeName: telegram_id
-            AttributeType: S
+            AttributeType: N
           - AttributeName: army_unit
             AttributeType: S
         KeySchema:

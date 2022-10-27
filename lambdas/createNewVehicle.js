@@ -1,10 +1,22 @@
+const { object, number, string } = require("yup");
+
 const Dynamo = require("../dynamo");
 
-module.exports.createNewVehicle = async (event) => {
-  const body = JSON.parse(event.body);
+const vehicleSchema = object({
+  vehicle_no: number().required(),
+  vehicle_class: number().required(),
+  model: string().required(),
+  last_topup_mileage: number().required(),
+  last_activity_timestamp: number().required(),
+  current_mileage: number().required(),
+  status: string().required(),
+  node: string().required(),
+});
 
+module.exports.createNewVehicle = async (event) => {
   try {
-    await Dynamo.createNewVehicle(body);
+    const vehicle = await vehicleSchema.validate(JSON.parse(event.body));
+    await Dynamo.createNewVehicle(vehicle);
 
     return {
       statusCode: 201,

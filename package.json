@@ -8,7 +8,7 @@
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json,yml}'",
     "test": "jest",
     "install-local-db": "serverless dynamodb install",
-    "serverless-offline": "sls offline start --location ."
+    "serverless-offline": "sls offline start"
   },
   "license": "ISC",
   "dependencies": {
@@ -68,7 +68,8 @@
     "which-boxed-primitive": "^1.0.2",
     "which-typed-array": "^1.1.8",
     "xml2js": "^0.4.19",
-    "xmlbuilder": "^9.0.7"
+    "xmlbuilder": "^9.0.7",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "aws-sdk": "^2.1198.0",
