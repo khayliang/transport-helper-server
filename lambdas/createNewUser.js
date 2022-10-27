@@ -7,7 +7,8 @@ const userSchema = object({
   army_unit: string().required(),
   name: string().required().uppercase(),
   total_mileage: number().required(),
-  rank: string().required(),
+  rank: string().required().uppercase(),
+  role: string().required()
 });
 
 module.exports.createNewUser = async (event) => {

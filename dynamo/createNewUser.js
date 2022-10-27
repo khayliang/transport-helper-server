@@ -7,6 +7,7 @@ module.exports = async (dynamoDb, data) => {
       name: data.name,
       nric: data.nric,
       total_mileage: data.total_mileage,
+      role: data.role,
       rank: data.rank,
     },
   };
