@@ -6,6 +6,7 @@ const createNewActivityFunction = require("./createNewActivity");
 const getUsersInArmyUnitFunction = require("./getUsersInArmyUnit");
 const getUserFunction = require("./getUser");
 const getUserActivityOfMonthFunction = require("./getUserActivityOfMonth");
+const getVehiclesInNode = require("./getVehiclesInNode");
 
 const AWS = require("aws-sdk");
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
@@ -19,4 +20,6 @@ module.exports = {
   getUser: async (telegram_id) => getUserFunction(dynamoDb, telegram_id),
   getUserActivityOfMonth: async (data) =>
     getUserActivityOfMonthFunction(dynamoDb, data),
+    getVehiclesInNode: async (data) =>
+    getVehiclesInNode(dynamoDb, data),
 };

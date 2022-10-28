@@ -175,3 +175,11 @@ functions:
           path: create_new_activity
           method: POST
           cors: false
+
+  getWptListForNode:
+    handler: lambdas/getWptListForNode.getWptListForNode
+    events:
+      - http:
+          path: get_wpt_list_for_node
+          method: GET
+          cors: false
