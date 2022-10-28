@@ -100,6 +100,18 @@ resources:
         KeySchema:
           - AttributeName: vehicle_no
             KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: NodeVehiclesIndex
+            KeySchema:
+              - AttributeName: node
+                KeyType: HASH
+              - AttributeName: timestamp_by_vehicle_no
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 2
+              WriteCapacityUnits: 1
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
