@@ -11,6 +11,7 @@ module.exports = async (
     current_mileage,
     status,
     node,
+    timestamp_by_vehicle_no
   }
 ) => {
   const get_vehicle_response = await getVehicle(dynamoDb, vehicle_no);
@@ -29,6 +30,7 @@ module.exports = async (
       current_mileage,
       status,
       node,
+      timestamp_by_vehicle_no
     },
   };
 
