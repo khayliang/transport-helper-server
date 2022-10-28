@@ -1,4 +1,4 @@
-const {orderBy} = require("lodash")
+const { orderBy } = require("lodash");
 
 module.exports = async (dynamodb, { telegram_id, month, year }) => {
   const userActivityId = `${telegram_id}#${month}#${year}`;
@@ -19,5 +19,5 @@ module.exports = async (dynamodb, { telegram_id, month, year }) => {
       vehicle_no,
     };
   });
-  return orderBy(parsedActivities, ['timestamp'], ['asc'])
+  return orderBy(parsedActivities, ["timestamp"], ["asc"]);
 };

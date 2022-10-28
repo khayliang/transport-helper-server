@@ -20,6 +20,5 @@ module.exports = {
   getUser: async (telegram_id) => getUserFunction(dynamoDb, telegram_id),
   getUserActivityOfMonth: async (data) =>
     getUserActivityOfMonthFunction(dynamoDb, data),
-    getVehiclesInNode: async (data) =>
-    getVehiclesInNode(dynamoDb, data),
+  getVehiclesInNode: async (data) => getVehiclesInNode(dynamoDb, data),
 };
