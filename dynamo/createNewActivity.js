@@ -75,6 +75,7 @@ module.exports = async (
       last_activity_timestamp: latestActivityTimestamp,
       vehicle_class,
       node: "unregistered",
+      last_activity_type: activity_type
     });
   } else {
     await replaceVehicle(dynamoDb, {
@@ -82,6 +83,7 @@ module.exports = async (
       current_mileage: mostCurrentMileage,
       last_activity_timestamp: latestActivityTimestamp,
       timestamp_by_vehicle_no: timestampByVehicleNo,
+      last_activity_type: activity_type
     });
   }
 

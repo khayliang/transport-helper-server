@@ -11,6 +11,7 @@ module.exports = async (
     current_mileage,
     status,
     node,
+    last_activity_type,
   }
 ) => {
   const putParams = {
@@ -24,6 +25,7 @@ module.exports = async (
       current_mileage,
       status,
       node,
+      last_activity_type,
       timestamp_by_vehicle_no: `${last_activity_timestamp}${vehicle_no}`,
     },
   };
