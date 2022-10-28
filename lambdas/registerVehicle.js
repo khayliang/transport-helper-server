@@ -9,7 +9,7 @@ const vehicleSchema = object({
   last_topup_mileage: number().required(),
   last_activity_timestamp: number().required(),
   current_mileage: number().required(),
-  status: string().required(),
+  status: string(),
   node: string().required(),
   last_activity_type: string().required()
 });
