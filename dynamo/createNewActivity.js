@@ -52,17 +52,26 @@ module.exports = async (
   const telegramIdString = `${telegram_id}#${monthOfActivity}#${yearOfActivity}`;
   const vehicle = await getVehicle(dynamoDb, vehicle_no);
 
-  const latestActivityTimestamp =
+  let latestActivityTimestamp = 0
+  let mostCurrentMileage = 0
+  let timestampByVehicleNo = 0
+  
+  if (vehicle) {
+    latestActivityTimestamp =
     timestamp > vehicle.last_activity_timestamp
       ? timestamp
       : vehicle.last_activity_timestamp;
-  const timestampByVehicleNo = `${latestActivityTimestamp}${vehicle_no}`;
+    timestampByVehicleNo = `${latestActivityTimestamp}${vehicle_no}`;
 
-  const mostCurrentMileage =
+    mostCurrentMileage =
     final_mileage > vehicle.current_mileage
       ? final_mileage
       : vehicle.current_mileage;
-
+  } else {
+    timestampByVehicleNo = `${timestamp}${vehicle_no}`;
+    mostCurrentMileage = final_mileage
+  }
+  
   if (final_mileage < initial_mileage) {
     throw Error("Final mileage is less than initial mileage.");
   }
