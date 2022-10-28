@@ -50,25 +50,33 @@ module.exports = async (
 
   const vehicleWeekString = `${vehicle_no}#${weekOfYear}#${yearOfActivity}`;
   const telegramIdString = `${telegram_id}#${monthOfActivity}#${yearOfActivity}`;
-
   const vehicle = await getVehicle(dynamoDb, vehicle_no);
+
+  const latestActivityTimestamp = timestamp > vehicle.last_activity_timestamp ? timestamp : vehicle.last_activity_timestamp
+  const timestampByVehicleNo = `${latestActivityTimestamp}${vehicle_no}`
+
+  const mostCurrentMileage = final_mileage > vehicle.current_mileage ? final_mileage : vehicle.current_mileage
 
   if (final_mileage < initial_mileage) {
     throw Error("Final mileage is less than initial mileage.");
   }
+
   if (!vehicle) {
     await createNewVehicle(dynamoDb, {
       vehicle_no,
-      current_mileage: final_mileage,
+      current_mileage: mostCurrentMileage,
       status: "active",
-      last_activity_timestamp: timestamp,
-      vehicle_class: vehicle_class,
+      last_activity_timestamp: latestActivityTimestamp,
+      vehicle_class,
+      timestamp_by_vehicle_no: timestampByVehicleNo,
+      node: 'homeless'
     });
   } else {
     await replaceVehicle(dynamoDb, {
       ...vehicle,
-      current_mileage: final_mileage,
-      last_activity_timestamp: timestamp,
+      current_mileage: mostCurrentMileage,
+      last_activity_timestamp: latestActivityTimestamp,
+      timestamp_by_vehicle_no: timestampByVehicleNo
     });
   }
 
