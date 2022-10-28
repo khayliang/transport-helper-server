@@ -68,7 +68,6 @@ module.exports = async (
       status: "active",
       last_activity_timestamp: latestActivityTimestamp,
       vehicle_class,
-      timestamp_by_vehicle_no: timestampByVehicleNo,
       node: 'homeless'
     });
   } else {
