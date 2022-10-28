@@ -1,4 +1,4 @@
-const createNewVehicle = require("./createNewVehicle");
+const createNewVehicle = require("./registerVehicle");
 const getVehicle = require("./getVehicle");
 const replaceVehicle = require("./replaceVehicle");
 const updateUserMileage = require("./addUserMileage");

@@ -136,11 +136,11 @@ functions:
           method: POST
           cors: false
 
-  createNewVehicle:
-    handler: lambdas/createNewVehicle.createNewVehicle
+  registerVehicle:
+    handler: lambdas/registerVehicle.registerVehicle
     events:
       - http:
-          path: create_new_vehicle
+          path: register_vehicle
           method: POST
           cors: false
 

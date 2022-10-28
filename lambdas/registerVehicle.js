@@ -13,10 +13,10 @@ const vehicleSchema = object({
   node: string().required(),
 });
 
-module.exports.createNewVehicle = async (event) => {
+module.exports.registerVehicle = async (event) => {
   try {
     const vehicle = await vehicleSchema.validate(JSON.parse(event.body));
-    await Dynamo.createNewVehicle(vehicle);
+    await Dynamo.registerVehicle(vehicle);
 
     return {
       statusCode: 201,

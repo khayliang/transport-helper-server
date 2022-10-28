@@ -13,11 +13,6 @@ module.exports = async (
     node,
   }
 ) => {
-  const get_vehicle_response = await getVehicle(dynamoDb, vehicle_no);
-  if (get_vehicle_response) {
-    throw Error("Vehicle already exists in database");
-  }
-
   const putParams = {
     TableName: process.env.DYNAMODB_VEHICLE_TABLE,
     Item: {
