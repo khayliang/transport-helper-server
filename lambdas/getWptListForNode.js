@@ -11,8 +11,8 @@ module.exports.getWptListForNode = async (event) => {
     const node = event.queryStringParameters.node;
 
     const { Items: nodeVehicles } = await Dynamo.getVehiclesInNode(node);
-    const { Items: homelessVehicles } = await Dynamo.getVehiclesInNode(
-      "homeless"
+    const { Items: unregisteredVehicles } = await Dynamo.getVehiclesInNode(
+      "unregistered"
     );
 
     const oneWeekBeforeTimestamp = moment()
@@ -28,18 +28,18 @@ module.exports.getWptListForNode = async (event) => {
         (x) => x.last_activity_timestamp
       )
     );
-    const wptVehiclesInHomeless = _.slice(
-      homelessVehicles,
+    const wptVehiclesInunregistered = _.slice(
+      unregisteredVehicles,
       0,
       _.sortedIndexBy(
-        homelessVehicles,
+        unregisteredVehicles,
         { last_activity_timestamp: oneWeekBeforeTimestamp },
         (x) => x.last_activity_timestamp
       )
     );
 
     const data = {
-      homeless: wptVehiclesInHomeless,
+      unregistered: wptVehiclesInunregistered,
       node: wptVehiclesInNode,
     };
 

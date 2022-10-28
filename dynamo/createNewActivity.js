@@ -74,7 +74,7 @@ module.exports = async (
       status: "active",
       last_activity_timestamp: latestActivityTimestamp,
       vehicle_class,
-      node: "homeless",
+      node: "unregistered",
     });
   } else {
     await replaceVehicle(dynamoDb, {
