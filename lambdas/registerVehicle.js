@@ -11,7 +11,7 @@ const vehicleSchema = object({
   current_mileage: number().required(),
   status: string(),
   node: string().required(),
-  last_activity_type: string().required()
+  last_activity_type: string().required(),
 });
 
 module.exports.registerVehicle = async (event) => {
