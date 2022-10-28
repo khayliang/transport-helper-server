@@ -28,7 +28,7 @@ module.exports.getWptListForNode = async (event) => {
         (x) => x.last_activity_timestamp
       )
     );
-    const wptVehiclesInunregistered = _.slice(
+    const wptVehiclesInUnregistered = _.slice(
       unregisteredVehicles,
       0,
       _.sortedIndexBy(
@@ -38,9 +38,32 @@ module.exports.getWptListForNode = async (event) => {
       )
     );
 
+    unregisteredWpt1 = [];
+    unregisteredWpt2 = [];
+    nodeWpt1 = [];
+    nodeWpt2 = [];
+
+    wptVehiclesInUnregistered.forEach((vehicle) => {
+      const { last_activity_type } = vehicle;
+      if (last_activity_type === "wpt1") unregisteredWpt2.push(vehicle);
+      else unregisteredWpt1.push(vehicle);
+    });
+
+    wptVehiclesInNode.forEach((vehicle) => {
+      const { last_activity_type } = vehicle;
+      if (last_activity_type === "wpt1") nodeWpt2.push(vehicle);
+      else nodeWpt1.push(vehicle);
+    });
+
     const data = {
-      unregistered: wptVehiclesInunregistered,
-      node: wptVehiclesInNode,
+      unregistered: {
+        wpt1: unregisteredWpt1,
+        wpt2: unregisteredWpt2,
+      },
+      node: {
+        wpt1: nodeWpt1,
+        wpt2: nodeWpt2,
+      },
     };
 
     return {
