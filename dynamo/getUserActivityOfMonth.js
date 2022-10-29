@@ -1,7 +1,7 @@
 const { orderBy } = require("lodash");
 
 module.exports = async (dynamo, { telegram_id, month, year }) => {
-  const {documentClient} = dynamo
+  const { documentClient } = dynamo;
 
   const userActivityId = `${telegram_id}#${month}#${year}`;
   const params = {

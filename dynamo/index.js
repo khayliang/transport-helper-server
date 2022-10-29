@@ -12,8 +12,8 @@ const AWS = require("aws-sdk");
 
 const dynamo = {
   dynamoDb: new AWS.DynamoDB(),
-  documentClient: new AWS.DynamoDB.DocumentClient()
-}
+  documentClient: new AWS.DynamoDB.DocumentClient(),
+};
 
 module.exports = {
   createNewUser: async (data) => createNewUserFunction(dynamo, data),
