@@ -1,4 +1,4 @@
-module.exports = async (dynamoDb, node) => {
+module.exports = async (documentClient, node) => {
   const params = {
     TableName: process.env.DYNAMODB_VEHICLE_TABLE,
     IndexName: "NodeVehiclesIndex",
@@ -8,5 +8,5 @@ module.exports = async (dynamoDb, node) => {
     },
   };
 
-  return await dynamoDb.query(params).promise();
+  return await documentClient.query(params).promise();
 };

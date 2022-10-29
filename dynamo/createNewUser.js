@@ -1,4 +1,4 @@
-module.exports = async (dynamoDb, data) => {
+module.exports = async (documentClient, data) => {
   const putParams = {
     TableName: process.env.DYNAMODB_USER_TABLE,
     Item: {
@@ -12,5 +12,5 @@ module.exports = async (dynamoDb, data) => {
     },
   };
 
-  return await dynamoDb.put(putParams).promise();
+  return await documentClient.put(putParams).promise();
 };

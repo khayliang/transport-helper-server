@@ -1,7 +1,7 @@
-module.exports = async (dynamoDb, vehicle) => {
+module.exports = async (documentClient, vehicle) => {
   const putParams = {
     TableName: process.env.DYNAMODB_VEHICLE_TABLE,
     Item: vehicle,
   };
-  return await dynamoDb.put(putParams).promise();
+  return await documentClient.put(putParams).promise();
 };

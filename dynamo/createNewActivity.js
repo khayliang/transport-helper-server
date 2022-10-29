@@ -31,7 +31,7 @@ Date.prototype.getWeekYear = function () {
 };
 
 module.exports = async (
-  dynamoDb,
+  documentClient,
   {
     timestamp,
     vehicle_no,
@@ -50,7 +50,7 @@ module.exports = async (
 
   const vehicleWeekString = `${vehicle_no}#${weekOfYear}#${yearOfActivity}`;
   const telegramIdString = `${telegram_id}#${monthOfActivity}#${yearOfActivity}`;
-  const vehicle = await getVehicle(dynamoDb, vehicle_no);
+  const vehicle = await getVehicle(documentClient, vehicle_no);
 
   let latestActivityTimestamp = 0;
   let mostCurrentMileage = 0;
@@ -77,7 +77,7 @@ module.exports = async (
   }
 
   if (!vehicle) {
-    await createNewVehicle(dynamoDb, {
+    await createNewVehicle(documentClient, {
       vehicle_no,
       current_mileage: mostCurrentMileage,
       status: "active",
@@ -87,7 +87,7 @@ module.exports = async (
       last_activity_type: activity_type,
     });
   } else {
-    await replaceVehicle(dynamoDb, {
+    await replaceVehicle(documentClient, {
       ...vehicle,
       current_mileage: mostCurrentMileage,
       last_activity_timestamp: latestActivityTimestamp,
@@ -96,7 +96,7 @@ module.exports = async (
     });
   }
 
-  await addUserMileage(dynamoDb, {
+  await addUserMileage(documentClient, {
     telegram_id,
     mileage_to_add: final_mileage - initial_mileage,
   });
@@ -114,5 +114,5 @@ module.exports = async (
     },
   };
 
-  return await dynamoDb.put(putParams).promise();
+  return await documentClient.put(putParams).promise();
 };

@@ -9,16 +9,17 @@ const getUserActivityOfMonthFunction = require("./getUserActivityOfMonth");
 const getVehiclesInNodeFunction = require("./getVehiclesInNode");
 
 const AWS = require("aws-sdk");
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+//const documentClient = new AWS.DynamoDB()
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 module.exports = {
-  createNewUser: async (data) => createNewUserFunction(dynamoDb, data),
-  registerVehicle: async (data) => registerVehicleFunction(dynamoDb, data),
-  createNewActivity: async (data) => createNewActivityFunction(dynamoDb, data),
+  createNewUser: async (data) => createNewUserFunction(documentClient, data),
+  registerVehicle: async (data) => registerVehicleFunction(documentClient, data),
+  createNewActivity: async (data) => createNewActivityFunction(documentClient, data),
   getUsersInArmyUnit: async (army_unit) =>
-    getUsersInArmyUnitFunction(dynamoDb, army_unit),
-  getUser: async (telegram_id) => getUserFunction(dynamoDb, telegram_id),
+    getUsersInArmyUnitFunction(documentClient, army_unit),
+  getUser: async (telegram_id) => getUserFunction(documentClient, telegram_id),
   getUserActivityOfMonth: async (data) =>
-    getUserActivityOfMonthFunction(dynamoDb, data),
-  getVehiclesInNode: async (data) => getVehiclesInNodeFunction(dynamoDb, data),
+    getUserActivityOfMonthFunction(documentClient, data),
+  getVehiclesInNode: async (data) => getVehiclesInNodeFunction(documentClient, data),
 };

@@ -1,4 +1,4 @@
-module.exports = async (dynamoDb, vehicle_no) => {
+module.exports = async (documentClient, vehicle_no) => {
   const params = {
     TableName: process.env.DYNAMODB_VEHICLE_TABLE,
     Key: {
@@ -6,7 +6,7 @@ module.exports = async (dynamoDb, vehicle_no) => {
     },
   };
 
-  const { Item } = await dynamoDb.get(params).promise();
+  const { Item } = await documentClient.get(params).promise();
 
   return Item;
 };

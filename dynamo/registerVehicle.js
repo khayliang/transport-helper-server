@@ -1,7 +1,7 @@
 const getVehicle = require("./getVehicle");
 
 module.exports = async (
-  dynamoDb,
+  documentClient,
   {
     vehicle_no,
     model,
@@ -30,5 +30,5 @@ module.exports = async (
     },
   };
 
-  return await dynamoDb.put(putParams).promise();
+  return await documentClient.put(putParams).promise();
 };

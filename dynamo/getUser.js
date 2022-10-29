@@ -1,11 +1,11 @@
-module.exports = async (dynamoDb, id) => {
+module.exports = async (documentClient, id) => {
   const params = {
     TableName: process.env.DYNAMODB_USER_TABLE,
     Key: {
       telegram_id: id,
     },
   };
-  const { Item } = await dynamoDb.get(params).promise();
+  const { Item } = await documentClient.get(params).promise();
 
   return Item;
 };
