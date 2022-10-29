@@ -100,7 +100,7 @@ resources:
           - AttributeName: node
             AttributeType: S
           - AttributeName: timestamp_by_vehicle_no
-            AttributeType: S
+            AttributeType: N
         KeySchema:
           - AttributeName: vehicle_no
             KeyType: HASH

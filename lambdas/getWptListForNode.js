@@ -14,7 +14,6 @@ module.exports.getWptListForNode = async (event) => {
     const { Items: unregisteredVehicles } = await Dynamo.getVehiclesInNode(
       "unregistered"
     );
-
     const oneWeekBeforeTimestamp = moment()
       .subtract(6, "days")
       .toDate()
