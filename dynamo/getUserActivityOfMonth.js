@@ -1,6 +1,8 @@
 const { orderBy } = require("lodash");
 
-module.exports = async (dynamodb, { telegram_id, month, year }) => {
+module.exports = async (dynamo, { telegram_id, month, year }) => {
+  const {documentClient} = dynamo
+
   const userActivityId = `${telegram_id}#${month}#${year}`;
   const params = {
     TableName: process.env.DYNAMODB_ACTIVITY_TABLE,
@@ -10,7 +12,7 @@ module.exports = async (dynamodb, { telegram_id, month, year }) => {
       ":s": userActivityId,
     },
   };
-  const { Items } = await dynamodb.query(params).promise();
+  const { Items } = await documentClient.query(params).promise();
   const parsedActivities = Items.map((activity) => {
     const { vehicle_no_by_week, ...rest } = activity;
     const vehicle_no = vehicle_no_by_week.split("#")[0];

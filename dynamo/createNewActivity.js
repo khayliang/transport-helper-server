@@ -1,7 +1,6 @@
 const createNewVehicle = require("./registerVehicle");
 const getVehicle = require("./getVehicle");
 const replaceVehicle = require("./replaceVehicle");
-const updateUserMileage = require("./addUserMileage");
 const addUserMileage = require("./addUserMileage");
 
 Date.prototype.getWeek = function () {
@@ -31,7 +30,7 @@ Date.prototype.getWeekYear = function () {
 };
 
 module.exports = async (
-  documentClient,
+  dynamo,
   {
     timestamp,
     vehicle_no,
@@ -42,6 +41,8 @@ module.exports = async (
     vehicle_class,
   }
 ) => {
+  const { documentClient } = dynamo;
+
   const dateOfActivity = new Date(timestamp);
 
   const yearOfActivity = dateOfActivity.getWeekYear();
@@ -50,7 +51,7 @@ module.exports = async (
 
   const vehicleWeekString = `${vehicle_no}#${weekOfYear}#${yearOfActivity}`;
   const telegramIdString = `${telegram_id}#${monthOfActivity}#${yearOfActivity}`;
-  const vehicle = await getVehicle(documentClient, vehicle_no);
+  const vehicle = await getVehicle(dynamo, vehicle_no);
 
   let latestActivityTimestamp = 0;
   let mostCurrentMileage = 0;
@@ -77,7 +78,7 @@ module.exports = async (
   }
 
   if (!vehicle) {
-    await createNewVehicle(documentClient, {
+    await createNewVehicle(dynamo, {
       vehicle_no,
       current_mileage: mostCurrentMileage,
       status: "active",
@@ -87,7 +88,7 @@ module.exports = async (
       last_activity_type: activity_type,
     });
   } else {
-    await replaceVehicle(documentClient, {
+    await replaceVehicle(dynamo, {
       ...vehicle,
       current_mileage: mostCurrentMileage,
       last_activity_timestamp: latestActivityTimestamp,
@@ -96,7 +97,7 @@ module.exports = async (
     });
   }
 
-  await addUserMileage(documentClient, {
+  await addUserMileage(dynamo, {
     telegram_id,
     mileage_to_add: final_mileage - initial_mileage,
   });

@@ -1,4 +1,5 @@
-module.exports = async (documentClient, data) => {
+module.exports = async (dynamo, data) => {
+  const { documentClient } = dynamo;
   const putParams = {
     TableName: process.env.DYNAMODB_USER_TABLE,
     Item: {

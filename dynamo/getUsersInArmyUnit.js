@@ -1,4 +1,6 @@
-module.exports = async (documentClient, army_unit) => {
+module.exports = async (dynamo, army_unit) => {
+  const { documentClient } = dynamo;
+
   const params = {
     TableName: process.env.DYNAMODB_USER_TABLE,
     IndexName: "ArmyUnitIndex",
