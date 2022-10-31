@@ -1,7 +1,6 @@
-const createNewVehicle = require("./createNewVehicle");
+const createNewVehicle = require("./registerVehicle");
 const getVehicle = require("./getVehicle");
 const replaceVehicle = require("./replaceVehicle");
-const updateUserMileage = require("./addUserMileage");
 const addUserMileage = require("./addUserMileage");
 
 Date.prototype.getWeek = function () {
@@ -31,7 +30,7 @@ Date.prototype.getWeekYear = function () {
 };
 
 module.exports = async (
-  dynamoDb,
+  dynamo,
   {
     timestamp,
     vehicle_no,
@@ -42,6 +41,8 @@ module.exports = async (
     vehicle_class,
   }
 ) => {
+  const { documentClient } = dynamo;
+
   const dateOfActivity = new Date(timestamp);
 
   const yearOfActivity = dateOfActivity.getWeekYear();
@@ -50,29 +51,53 @@ module.exports = async (
 
   const vehicleWeekString = `${vehicle_no}#${weekOfYear}#${yearOfActivity}`;
   const telegramIdString = `${telegram_id}#${monthOfActivity}#${yearOfActivity}`;
+  const vehicle = await getVehicle(dynamo, vehicle_no);
 
-  const vehicle = await getVehicle(dynamoDb, vehicle_no);
+  let latestActivityTimestamp = 0;
+  let mostCurrentMileage = 0;
+  let timestampByVehicleNo = 0;
+
+  if (vehicle) {
+    latestActivityTimestamp =
+      timestamp > vehicle.last_activity_timestamp
+        ? timestamp
+        : vehicle.last_activity_timestamp;
+    timestampByVehicleNo = `${latestActivityTimestamp}${vehicle_no}`;
+
+    mostCurrentMileage =
+      final_mileage > vehicle.current_mileage
+        ? final_mileage
+        : vehicle.current_mileage;
+  } else {
+    timestampByVehicleNo = `${timestamp}${vehicle_no}`;
+    mostCurrentMileage = final_mileage;
+  }
 
   if (final_mileage < initial_mileage) {
     throw Error("Final mileage is less than initial mileage.");
   }
+
   if (!vehicle) {
-    await createNewVehicle(dynamoDb, {
+    await createNewVehicle(dynamo, {
       vehicle_no,
-      current_mileage: final_mileage,
+      current_mileage: mostCurrentMileage,
       status: "active",
-      last_activity_timestamp: timestamp,
-      vehicle_class: vehicle_class,
+      last_activity_timestamp: latestActivityTimestamp,
+      vehicle_class,
+      node: "unregistered",
+      last_activity_type: activity_type,
     });
   } else {
-    await replaceVehicle(dynamoDb, {
+    await replaceVehicle(dynamo, {
       ...vehicle,
-      current_mileage: final_mileage,
-      last_activity_timestamp: timestamp,
+      current_mileage: mostCurrentMileage,
+      last_activity_timestamp: latestActivityTimestamp,
+      timestamp_by_vehicle_no: timestampByVehicleNo,
+      last_activity_type: activity_type,
     });
   }
 
-  await addUserMileage(dynamoDb, {
+  await addUserMileage(dynamo, {
     telegram_id,
     mileage_to_add: final_mileage - initial_mileage,
   });
@@ -90,5 +115,5 @@ module.exports = async (
     },
   };
 
-  return await dynamoDb.put(putParams).promise();
+  return await documentClient.put(putParams).promise();
 };

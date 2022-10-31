@@ -1,10 +1,20 @@
+const { object, number, string } = require("yup");
+
 const Dynamo = require("../dynamo");
 
-module.exports.createNewUser = async (event) => {
-  const body = JSON.parse(event.body);
+const userSchema = object({
+  telegram_id: number().required(),
+  army_unit: string().required(),
+  name: string().required().uppercase(),
+  total_mileage: number().required(),
+  rank: string().required().uppercase(),
+  role: string().required(),
+});
 
+module.exports.createNewUser = async (event) => {
   try {
-    await Dynamo.createNewUser(body);
+    const user = await userSchema.validate(JSON.parse(event.body));
+    await Dynamo.createNewUser(user);
 
     return {
       statusCode: 201,

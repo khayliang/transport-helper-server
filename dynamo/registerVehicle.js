@@ -1,3 +1,5 @@
+const getVehicle = require("./getVehicle");
+
 module.exports = async (
   dynamo,
   {
@@ -10,7 +12,6 @@ module.exports = async (
     status,
     node,
     last_activity_type,
-    timestamp_by_vehicle_no,
   }
 ) => {
   const { dynamoDb } = dynamo;
@@ -46,7 +47,7 @@ module.exports = async (
         S: last_activity_type,
       },
       timestamp_by_vehicle_no: {
-        N: timestamp_by_vehicle_no,
+        N: `${last_activity_timestamp}${vehicle_no}`,
       },
     },
   };

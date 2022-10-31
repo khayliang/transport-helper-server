@@ -39,7 +39,7 @@ resources:
         TableName: ${self:custom.DYNAMODB_USER_TABLE}
         AttributeDefinitions:
           - AttributeName: telegram_id
-            AttributeType: S
+            AttributeType: N
           - AttributeName: army_unit
             AttributeType: S
         KeySchema:
@@ -97,9 +97,25 @@ resources:
         AttributeDefinitions:
           - AttributeName: vehicle_no
             AttributeType: N
+          - AttributeName: node
+            AttributeType: S
+          - AttributeName: timestamp_by_vehicle_no
+            AttributeType: N
         KeySchema:
           - AttributeName: vehicle_no
             KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: NodeVehiclesIndex
+            KeySchema:
+              - AttributeName: node
+                KeyType: HASH
+              - AttributeName: timestamp_by_vehicle_no
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 2
+              WriteCapacityUnits: 1
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
@@ -120,11 +136,11 @@ functions:
           method: POST
           cors: false
 
-  createNewVehicle:
-    handler: lambdas/createNewVehicle.createNewVehicle
+  registerVehicle:
+    handler: lambdas/registerVehicle.registerVehicle
     events:
       - http:
-          path: create_new_vehicle
+          path: register_vehicle
           method: POST
           cors: false
 
@@ -158,4 +174,12 @@ functions:
       - http:
           path: create_new_activity
           method: POST
+          cors: false
+
+  getWptListForNode:
+    handler: lambdas/getWptListForNode.getWptListForNode
+    events:
+      - http:
+          path: get_wpt_list_for_node
+          method: GET
           cors: false

@@ -1,4 +1,12 @@
+const { object, number } = require("yup");
+
 const Dynamo = require("../dynamo");
+
+const userActivityQuerySchema = object({
+  telegram_id: number().required(),
+  month: number().required(),
+  year: number().required(),
+});
 
 module.exports.getUserActivityOfMonth = async (event) => {
   try {
@@ -6,12 +14,10 @@ module.exports.getUserActivityOfMonth = async (event) => {
     if (!telegram_id || !month || !year) {
       throw Error("Missing query variables: telegram_id, month, year");
     }
-
-    const userData = await Dynamo.getUserActivityOfMonth({
-      telegram_id,
-      month,
-      year,
-    });
+    const userActivityQuery = await userActivityQuerySchema.validate(
+      event.queryStringParameters
+    );
+    const userData = await Dynamo.getUserActivityOfMonth(userActivityQuery);
 
     return {
       statusCode: 200,
