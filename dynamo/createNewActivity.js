@@ -85,7 +85,7 @@ module.exports = async (
       status: "active",
       current_mileage: mostCurrentMileage,
       status: "active",
-      last_activity_timestamp: latestActivityTimestamp,
+      last_activity_timestamp: timestamp,
       vehicle_class,
       node: "unregistered",
       last_activity_type: activity_type,
