@@ -196,3 +196,12 @@ functions:
           method: GET
           cors: false
           private: true
+  
+  getVehicle:
+    handler: lambdas/getVehicle.getVehicle
+    events:
+      - http:
+          path: get_vehicle
+          method: GET
+          cors: false
+          private: true

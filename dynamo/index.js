@@ -7,6 +7,7 @@ const getUsersInArmyUnitFunction = require("./getUsersInArmyUnit");
 const getUserFunction = require("./getUser");
 const getUserActivityOfMonthFunction = require("./getUserActivityOfMonth");
 const getVehiclesInNodeFunction = require("./getVehiclesInNode");
+const getVehicleFunction = require("./getVehicle");
 
 const AWS = require("aws-sdk");
 
@@ -25,4 +26,5 @@ module.exports = {
   getUserActivityOfMonth: async (data) =>
     getUserActivityOfMonthFunction(dynamo, data),
   getVehiclesInNode: async (data) => getVehiclesInNodeFunction(dynamo, data),
+  getVehicle: async (data) => getVehicleFunction(dynamo, data),
 };
