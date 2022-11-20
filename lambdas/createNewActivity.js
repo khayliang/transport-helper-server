@@ -1,9 +1,16 @@
-const { object, number, string } = require("yup");
+const { object, number, string, boolean } = require("yup");
 
 const Dynamo = require("../dynamo");
 
 const activitySchema = object({
   timestamp: number().required(),
+  purpose: string(),
+  ivc_working: boolean(),
+  initial_destination: string(),
+  final_destination: string(),
+  final_timestamp: number(),
+  pol_amt: number(),
+  pol_odo: number(),
   vehicle_no: number().required(),
   telegram_id: number().required(),
   final_mileage: number().required(),

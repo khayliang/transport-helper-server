@@ -2,6 +2,7 @@ const createNewVehicle = require("./registerVehicle");
 const getVehicle = require("./getVehicle");
 const replaceVehicle = require("./replaceVehicle");
 const addUserMileage = require("./addUserMileage");
+const { format } = require("util");
 
 Date.prototype.getWeek = function () {
   var date = new Date(this.getTime());
@@ -39,6 +40,13 @@ module.exports = async (
     activity_type,
     initial_mileage,
     vehicle_class,
+    purpose,
+    ivc_working,
+    initial_destination,
+    final_destination,
+    final_timestamp,
+    pol_amt,
+    pol_odo,
   }
 ) => {
   const { documentClient } = dynamo;
@@ -77,6 +85,16 @@ module.exports = async (
     throw Error("Final mileage is less than initial mileage.");
   }
 
+  if (final_timestamp < timestamp) {
+    throw Error("End time is less than starting time.");
+  }
+
+  if (pol_odo > final_mileage) {
+    throw Error(
+      "POL odometer mileage is greater than ending odometer mileage."
+    );
+  }
+
   if (!vehicle) {
     await createNewVehicle(dynamo, {
       vehicle_no,
@@ -112,6 +130,13 @@ module.exports = async (
       timestamp: timestamp,
       initial_mileage: initial_mileage,
       vehicle_class: vehicle_class,
+      purpose,
+      ivc_working,
+      initial_destination,
+      final_destination,
+      final_timestamp,
+      pol_amt,
+      pol_odo,
     },
   };
 
