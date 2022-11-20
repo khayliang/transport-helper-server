@@ -98,9 +98,12 @@ module.exports = async (
   if (!vehicle) {
     await createNewVehicle(dynamo, {
       vehicle_no,
+      model: "unregistered",
+      last_topup_mileage: 0,
+      status: "active",
       current_mileage: mostCurrentMileage,
       status: "active",
-      last_activity_timestamp: latestActivityTimestamp,
+      last_activity_timestamp: timestamp,
       vehicle_class,
       node: "unregistered",
       last_activity_type: activity_type,
